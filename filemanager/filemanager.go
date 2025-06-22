@@ -6,6 +6,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 )
 
 type Filemanager struct {
@@ -22,6 +23,8 @@ func (fm Filemanager) ReadFiles() ([]string, error) {
 		return nil, errors.New("failed to open file")
 	}
 
+	defer file.Close()
+
 	scaner := bufio.NewScanner(file)
 
 	var lines []string
@@ -33,7 +36,7 @@ func (fm Filemanager) ReadFiles() ([]string, error) {
 	err = scaner.Err()
 
 	if err != nil {
-		file.Close()
+		//file.Close()
 		return nil, errors.New("failed to read file")
 	}
 
@@ -48,11 +51,15 @@ func (fm Filemanager) WriteJSON(data interface{}) error {
 		return errors.New("fail to create file")
 	}
 
+	defer file.Close()
+
+	time.Sleep(3 * time.Second)
+
 	encoder := json.NewEncoder(file)
 	err = encoder.Encode(data)
 
 	if err != nil {
-		file.Close()
+		//file.Close()
 		return errors.New("fail to convert data to json")
 	}
 
